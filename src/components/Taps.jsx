@@ -104,7 +104,7 @@ export function TabsDefault({ to, setFrom, setTo, setDetected, getFrom, getTo, g
                   onClick(value);
                   setSelVal('');
                   value === "detect" ? null : setVal(false);
-                  !to ?restDetectLang():null
+                  !to ? restDetectLang() : null
                 }}>
                 {label}
               </button>
@@ -120,7 +120,12 @@ export function TabsDefault({ to, setFrom, setTo, setDetected, getFrom, getTo, g
               {apiData.map((d) => (
                 <Option key={d.code} value={d.code} className=" w-32 xl:w-full"
                   onClick={() => {
-                    !to ? setFrom(d.code) : setTo(d.code);
+                    if (!to) {
+                      setFrom(d.code)
+                      restDetectLang()
+                    } else {
+                      setTo(d.code)
+                    }
                     setVal(false);
                     setSelVal(d.name);
                   }}
