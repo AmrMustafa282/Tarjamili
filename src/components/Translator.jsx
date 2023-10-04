@@ -7,6 +7,7 @@ import { Button } from "@material-tailwind/react";
 const Translator = () => {
   const [text, setText] = useState('');
   const [detect, setDetect] = useState(true);
+  const [detectLang, setDetectLang] = useState('');
 
   const [from, setFromData] = useState('detect');
   const [to, setToData] = useState('ar');
@@ -40,7 +41,10 @@ const Translator = () => {
     if (text) {
       try {
         axios.request(options)
-          .then(res => setTranslated(res.data[0].translations[0].text))
+          .then(res => {
+            setTranslated(res.data[0].translations[0].text);
+            setDetectLang(res.data[0].detectedLanguage.language);
+          })
 
       } catch (error) {
         console.error(error);
@@ -55,11 +59,17 @@ const Translator = () => {
     setDetect(false)
     setFromData(from);
   }
+  const restDetectLang = () => {
+      setDetectLang("")
+  }
   const getTo = () => {
     return to;
   }
   const getFrom = () => {
     return from;
+  }
+  const getDetectedLang = () => {
+    return detectLang;
   }
 
 
@@ -68,10 +78,9 @@ const Translator = () => {
   }
 
   useEffect(() => {
-    console.log(from)
-    console.log(to)
     // console.log(from)
-
+    // console.log(to)
+    // console.log(from)
     trans();
   }, [to, from, detect, text])
 
@@ -81,7 +90,7 @@ const Translator = () => {
       <div className="flex flex-col xl:flex-row items-center gap-8 mx-auto xl:gap-2">
 
         <div className="   max-w-[340px] sm:max-w-[500px] md:max-w-[750px]  w-full xl:max-w-[640px]  min-h-[200px]  flex-1  shadow-inner  relative">
-          <TabsDefault setFrom={setFrom} setTo={setTo} setDetected={setDetected} getTo={getTo()} getFrom={getFrom()} />
+          <TabsDefault setFrom={setFrom} setTo={setTo} setDetected={setDetected} getTo={getTo()} getFrom={getFrom()} getDetectedLang={getDetectedLang()} restDetectLang={restDetectLang} />
           <textarea
             style={{direction:from==="ar"? "rtl":null}}
             className=" border-gray-300 border-[1px]   rounded-md min-h-[200px] min-w-[100%]  px-8 pt-4 text-xl focus:outline-none resize-none"
@@ -92,7 +101,7 @@ const Translator = () => {
           </textarea>
           <span
             className="absolute bottom-5  left-5 cursor-pointer group"
-            onClick={() => { setText(""); setTranslated("") }}
+            onClick={() => { setText(""); setTranslated(""); setDetectLang("") }}
           >
             <Button variant="gradient" size="sm" color="red">Clear</Button>
           </span>

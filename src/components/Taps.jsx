@@ -7,12 +7,10 @@ import {
 
 import { apiData } from "../assets/Langs"
 import { useState } from "react";
-export function TabsDefault({ to, setFrom, setTo, setDetected, getFrom, getTo }) {
+export function TabsDefault({ to, setFrom, setTo, setDetected, getFrom, getTo, getDetectedLang, restDetectLang }) {
 
   const flags = ['en', 'ar', 'fr', 'es', 'nl'];
   const [val, setVal] = useState(false)
-
-
 
 
   const handelFrom = (val) => {
@@ -31,12 +29,16 @@ export function TabsDefault({ to, setFrom, setTo, setDetected, getFrom, getTo })
   }
 
 
-
+  // console.log(getDetectedLang)
 
 
   const data = [
     (to ? {} : {
-      label: "Detect",
+      label: getDetectedLang
+        ?
+        `${apiData.filter((e) => e.code === getDetectedLang)[0].name}-Detected`
+        :
+        "Detect",
       value: "detect",
       fvalue: "detect",
       onClick: () => {
@@ -83,16 +85,16 @@ export function TabsDefault({ to, setFrom, setTo, setDetected, getFrom, getTo })
           : (getTo === val) ? handelFrom(val) : setFrom(val)
       },
     },
-    {
-      label: "Dutch",
-      value: "nl",
-      fvalue: flags[4],
-      onClick: (val) => {
-        to
-          ? (getFrom === val) ? handelTo(val) : setTo(val)
-          : (getTo === val) ? handelFrom(val) : setFrom(val)
-      },
-    },
+    // {
+    //   label: "Dutch",
+    //   value: "nl",
+    //   fvalue: flags[4],
+    //   onClick: (val) => {
+    //     to
+    //       ? (getFrom === val) ? handelTo(val) : setTo(val)
+    //       : (getTo === val) ? handelFrom(val) : setFrom(val)
+    //   },
+    // },
   ];
   return (
     <>
@@ -101,13 +103,13 @@ export function TabsDefault({ to, setFrom, setTo, setDetected, getFrom, getTo })
         <TabsHeader
           className="bg-transparent "
         >
-          <div className="flex max-w-[120px] sm:max-w-none overflow-hidden">
+          <div className="flex max-w-[135px] sm:max-w-none overflow-hidden">
             {data.map(({ label, value, onClick }) => (
               value &&
               <button size="sm"
                 key={value}
                 className={
-                  "px-2 py-1 xl:px-3 xl:py-2  rounded-lg duration-200 text-[12px] xl:text-sm font-semibold " +
+                  "px-2 py-1 xl:px-3 xl:py-2  rounded-lg duration-200 text-sm font-semibold " +
                   (val
                     ?
                     (value === "detect")
@@ -121,7 +123,7 @@ export function TabsDefault({ to, setFrom, setTo, setDetected, getFrom, getTo })
                 }
                 onClick={() => {
                   onClick(value);
-                  value === "detect" ? null : setVal(false);
+                  value === "detect" ? null : setVal(false); restDetectLang();
                 }}>
                 {label}
               </button>
