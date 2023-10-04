@@ -9,27 +9,21 @@ import { apiData } from "../assets/Langs"
 import { useState } from "react";
 export function TabsDefault({ to, setFrom, setTo, setDetected, getFrom, getTo, getDetectedLang, restDetectLang }) {
 
-  const flags = ['en', 'ar', 'fr', 'es', 'nl'];
   const [val, setVal] = useState(false)
+  const [selVal, setSelVal] = useState('');
 
 
   const handelFrom = (val) => {
-    [flags[0], flags[1]] = [flags[1], flags[0]];
-    console.log("herer");
-    console.log(data)
-    // [flags[flags.indexOf(getFrom)], flags[flags.indexOf(val)]] = [flags[flags.indexOf(val)], flags[flags.indexOf(getFrom)]]
     setTo(getFrom);
     setFrom(val);
 
   }
   const handelTo = (val) => {
-    [flags[flags.indexOf(getTo)], flags[flags.indexOf(val)]] = [flags[flags.indexOf(val)], flags[flags.indexOf(getTo)]]
     setFrom(getTo);
     setTo(val);
   }
 
 
-  // console.log(getDetectedLang)
 
 
   const data = [
@@ -40,7 +34,6 @@ export function TabsDefault({ to, setFrom, setTo, setDetected, getFrom, getTo, g
         :
         "Detect",
       value: "detect",
-      fvalue: "detect",
       onClick: () => {
         setDetected();
         setVal(true);
@@ -50,7 +43,6 @@ export function TabsDefault({ to, setFrom, setTo, setDetected, getFrom, getTo, g
     {
       label: "English",
       value: "en",
-      fvalue: flags[0],
       onClick: (val) => {
         to
           ? (getFrom === val) ? handelTo(val) : setTo(val)
@@ -60,7 +52,6 @@ export function TabsDefault({ to, setFrom, setTo, setDetected, getFrom, getTo, g
     }, {
       label: "Arabic",
       value: "ar",
-      fvalue: flags[1],
       onClick: (val) => {
         to
           ? (getFrom === val) ? handelTo(val) : setTo(val)
@@ -69,7 +60,6 @@ export function TabsDefault({ to, setFrom, setTo, setDetected, getFrom, getTo, g
     }, {
       label: "French",
       value: "fr",
-      fvalue: flags[2],
       onClick: (val) => {
         to
           ? (getFrom === val) ? handelTo(val) : setTo(val)
@@ -78,23 +68,12 @@ export function TabsDefault({ to, setFrom, setTo, setDetected, getFrom, getTo, g
     }, {
       label: "Spanish",
       value: "es",
-      fvalue: flags[3],
       onClick: (val) => {
         to
           ? (getFrom === val) ? handelTo(val) : setTo(val)
           : (getTo === val) ? handelFrom(val) : setFrom(val)
       },
     },
-    // {
-    //   label: "Dutch",
-    //   value: "nl",
-    //   fvalue: flags[4],
-    //   onClick: (val) => {
-    //     to
-    //       ? (getFrom === val) ? handelTo(val) : setTo(val)
-    //       : (getTo === val) ? handelFrom(val) : setFrom(val)
-    //   },
-    // },
   ];
   return (
     <>
@@ -123,7 +102,9 @@ export function TabsDefault({ to, setFrom, setTo, setDetected, getFrom, getTo, g
                 }
                 onClick={() => {
                   onClick(value);
-                  value === "detect" ? null : setVal(false); restDetectLang();
+                  setSelVal('');
+                  value === "detect" ? null : setVal(false);
+                  !to ?restDetectLang():null
                 }}>
                 {label}
               </button>
@@ -134,13 +115,14 @@ export function TabsDefault({ to, setFrom, setTo, setDetected, getFrom, getTo, g
             <Select label="Language"
               lockScroll
               className=" w-32 xl:w-full"
-
+              value={selVal}
             >
               {apiData.map((d) => (
                 <Option key={d.code} value={d.code} className=" w-32 xl:w-full"
                   onClick={() => {
                     !to ? setFrom(d.code) : setTo(d.code);
-                    setVal(true);
+                    setVal(false);
+                    setSelVal(d.name);
                   }}
                 >{d.name}</Option>
               ))}
